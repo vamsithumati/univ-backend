@@ -4,9 +4,6 @@ pydantic
 bson
 pandas
 pymongo
-contextlib
 requests
 apscheduler
-io
-urllib
 typing
