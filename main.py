@@ -10,8 +10,20 @@ from contextlib import asynccontextmanager
 from typing import Optional
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
 app = FastAPI()
+
+middleware = [
+    Middleware(
+        CORSMiddleware,
+        allow_origins=['*'],
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*']
+    )
+]
 # Define the username and password
 username = 'univ'  # Replace with your actual username
 password = 'univ@123'  # Replace with your actual password
@@ -83,7 +95,7 @@ async def lifespan(app: FastAPI):
     # fetch_and_update_courses()
     scheduler = BackgroundScheduler()
 
-    scheduler.add_job(ping, 'interval', minutes=1)
+    scheduler.add_job(fetch_and_update_courses, 'interval', minutes=1)
     scheduler.start()
     print("Scheduler started.")
     
@@ -95,7 +107,7 @@ async def lifespan(app: FastAPI):
     print("Scheduler shutdown.")
 
 # Attach lifespan event handler
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, middleware=middleware)
 
 
 def course_helper(course) -> dict:
@@ -140,13 +152,24 @@ async def get_courses(
 ):
     skip = (page - 1) * limit
     query = {}
-
+    regexObj = {"$regex": search, "$options": "i"}
     # Search functionality (if search parameter is provided)
     if search:
         query = {
             "$or": [
-                {"title": {"$regex": search, "$options": "i"}},
-                {"description": {"$regex": search, "$options": "i"}}
+        #         "id": str(course["_id"]),
+        # "university": course["university"],
+        # "city": course["city"],
+        # "country": course["country"],
+        # "courseName": course["courseName"],
+        # "courseDescription": course["courseDescription"],
+        # "startDate": course["startDate"],
+        # "endDate": course["endDate"],
+        # "price": course["price"],
+        # "currency": course["currency"]
+                {"university" : regexObj},
+                {"city": regexObj},
+                
             ]
         }
     
