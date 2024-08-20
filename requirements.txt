@@ -1,1 +1,6 @@
 fastapi[all]
+uvicorn[standard]
+pydantic
+bson
+pandas
+pymongo
