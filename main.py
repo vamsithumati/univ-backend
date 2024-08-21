@@ -95,7 +95,7 @@ async def lifespan(app: FastAPI):
     # fetch_and_update_courses()
     scheduler = BackgroundScheduler()
 
-    scheduler.add_job(fetch_and_update_courses, 'interval', minutes=1)
+    scheduler.add_job(fetch_and_update_courses, 'interval', minutes=10)
     scheduler.start()
     print("Scheduler started.")
     
@@ -157,18 +157,16 @@ async def get_courses(
     if search:
         query = {
             "$or": [
-        #         "id": str(course["_id"]),
-        # "university": course["university"],
-        # "city": course["city"],
-        # "country": course["country"],
-        # "courseName": course["courseName"],
-        # "courseDescription": course["courseDescription"],
-        # "startDate": course["startDate"],
-        # "endDate": course["endDate"],
-        # "price": course["price"],
-        # "currency": course["currency"]
                 {"university" : regexObj},
                 {"city": regexObj},
+                {"country": regexObj},
+                {"courseName" : regexObj},
+                {"courseDescription": regexObj},
+                {"startDate": regexObj},
+                {"endDate" : regexObj},
+                {"price": regexObj},
+                {"currency": regexObj},
+                
                 
             ]
         }
